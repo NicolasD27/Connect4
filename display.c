@@ -8,8 +8,16 @@ void display_game()
     int x = 0;
     int y = 0;
 
+    x = 0;
+    while(x < board.width)
+    {
+        ft_printf("  %d  ", x + 1);
+        x++;
+    }
+    ft_printf("\n");
     while (y < board.height)
     {
+        
         x = 0;
         while(x < board.width)
         {
