@@ -1,3 +1,5 @@
+#ifndef CONNECT4_H
+#define CONNECT4_H
 
 #include "libft.h"
 
@@ -9,7 +11,7 @@
 enum case_state {
 	empty = 0,
 	red,
-	black
+	yellow
 };
 
 
@@ -18,12 +20,18 @@ struct	coordinates {
 	int		y;
 };
 
-struct map {
+typedef struct map {
 
 	enum case_state **	tab;
 	
 	int		height;
 	int		width;
-};
+}				t_map;
 
-struct map	board;
+
+void display_game();
+
+#endif
+
+
+
