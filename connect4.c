@@ -53,7 +53,8 @@ struct answer *	allocate_answer_node(struct coordinates * coord)
 	struct answer * new = ft_calloc(1, sizeof(struct answer));
 	if (new)
 	{
-		new->input = *coord;
+		new->input.x = coord->x;
+		new->input.y = coord->y;
 		new->next = ft_calloc(get_width(), sizeof(void *));
 		if (!new->next)
 		{
@@ -76,13 +77,37 @@ void	deallocate_board()
 	free(board.tab);
 }
 
+enum case_state	choose_first_player()
+{
+	int res = rand() % 2;
+	if (res)
+		return red;
+	else
+		return yellow;
+}
+
+enum case_state switch_player(enum case_state current)
+{
+	if (current == red)
+		return yellow;
+	else
+		return red;
+}
+
 int main(int argc, char *argv[])
 {
 	// int winner;
 	if ((argc != 3) || !get_map_size(argv[1], argv[2]))
 		return print_usage();
+	struct coordinates tmp;
+	tmp.x = 0;
+	tmp.y = 0;
+	struct answer * node = allocate_answer_node(&tmp);
 	if (allocate_board())
 		display_game();
+
+	compute_whole_game(node, 5, choose_first_player());
+	//display_game();
 	deallocate_board();
 	// while (1)
 	// {
