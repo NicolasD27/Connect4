@@ -48,13 +48,15 @@ bool	allocate_board()
 	return (false);
 }
 
-struct answer *	allocate_answer_node(struct coordinates * coord)
+struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev)
 {
 	struct answer * new = ft_calloc(1, sizeof(struct answer));
 	if (new)
 	{
 		new->input.x = coord->x;
 		new->input.y = coord->y;
+		new->eval = 0;
+		new->prev = prev;
 		new->next = ft_calloc(get_width(), sizeof(void *));
 		if (!new->next)
 		{
@@ -103,11 +105,13 @@ int main(int argc, char *argv[])
   struct coordinates tmp;
 	tmp.x = 0;
 	tmp.y = 0;
-	struct answer * node = allocate_answer_node(&tmp);
+	struct answer * node = allocate_answer_node(&tmp, NULL);
 	if (allocate_board())
 		display_game();
 
 	compute_whole_game(node, 5, choose_first_player());
+	int ai_move = best_move(node);
+	ft_printf("ai move : %d\n", ai_move);
 	while (1)
 	{
 		prompt_move();
