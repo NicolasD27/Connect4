@@ -54,17 +54,20 @@ void	deallocate_board()
 
 int main(int argc, char *argv[])
 {
-	// int winner;
+	int winner;
 	if ((argc != 3) || !get_map_size(argv[1], argv[2]))
 		return print_usage();
 	allocate_board();
 	display_game();
-	// while (1)
-	// {
-	// 	display_game();
-	// 	prompt_move();
-	// 	if ((winner = is_finished()) != 0)
-	// 		return print_winner(winner);
-	// }
+	while (1)
+	{
+		prompt_move();
+		display_game();
+		if ((winner = is_finished()) != 0)
+		{
+			deallocate_board();
+			return print_winner(winner);
+		}
+	}
 	return (0);
 }
