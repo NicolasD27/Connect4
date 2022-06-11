@@ -1,5 +1,5 @@
 
-#include "libft/libft.h"
+#include "libft.h"
 
 #include <stdbool.h>
 
