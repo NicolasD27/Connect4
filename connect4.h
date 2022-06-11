@@ -57,7 +57,7 @@ int		get_height();
 void	compute_whole_game(struct answer * node, int depth, enum case_state current_player);
 void	fill_turn_node(struct answer * node, enum case_state current_player);
 int		get_first_empty_tile_height_in_column(int column);
-
+bool all_move_are_done(struct answer *node);
 int best_move(struct answer *node);
 
 struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * node);

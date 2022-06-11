@@ -69,15 +69,20 @@ struct answer *	allocate_answer_node(struct coordinates * coord, struct answer *
 
 void	deallocate_answer_node(struct answer * node)
 {
+	if (all_move_are_done(node))
+	{
+		free(node->next);
+		node->next = NULL;
+		free(node);
+		node = NULL;
+		return ;
+	}
 	for (int i = 0; i < get_width(); ++i)
 	{
 		if (node->next[i])
-		{
 			deallocate_answer_node(node->next[i]);
-		}
 	}
-	//free(node->next[i]);
-//	free(node->next);
+	free(node->next);
 	free(node);
 }
 
@@ -117,24 +122,25 @@ int main(int argc, char *argv[])
 	tmp.x = 0;
 	tmp.y = 0;
 
-	struct answer * node = allocate_answer_node(&tmp, NULL);
 	if (allocate_board())
 		display_game();
 
-	compute_whole_game(node, 5, choose_first_player());
-	int ai_move = best_move(node);
-	ft_printf("ai move : %d\n", ai_move);
+//	int ai_move = best_move(node);
+//	ft_printf("ai move : %d\n", ai_move);
 	while (1)
 	{
 		prompt_move();
 		display_game();
-		compute_whole_game(node, 3, red);
+		struct answer * node = allocate_answer_node(&tmp, NULL);
+		compute_whole_game(node, 1, red);
+		deallocate_answer_node(node);
+
 		if ((winner = is_finished()) != 0)
 		{
 			deallocate_board();
-//			deallocate_answer_node(node);
 			return print_winner(winner);
 		}
 	}
+
 	return (0);
 }
