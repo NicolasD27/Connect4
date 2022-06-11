@@ -13,32 +13,32 @@ void display_game()
         x = 0;
         while(x < board.width)
         {
-            printf("-----");
+            ft_printf("-----");
             x++;
         }
-        printf("-\n");
+        ft_printf("-\n");
         x = 0;
         while (x < board.width)
         {
-            printf("|");
+            ft_printf("|");
             if ( board.tab[y][x] == red)
-                printf(" %s ", "🔴");
+                ft_printf(" %s ", "🔴");
             else if ( board.tab[y][x] == empty)
-                printf(" %s ", "  ");
+                ft_printf(" %s ", "  ");
             else
-                printf(" %s ", "🟡");
+                ft_printf(" %s ", "🟡");
             x++;
         }
         y++;
-        printf("|\n");
+        ft_printf("|\n");
     }
     x = 0;
     while(x < board.width)
     {
-        printf("-----");
+        ft_printf("-----");
         x++;
     }
-    printf("-\n");
+    ft_printf("-\n");
 }
 
 

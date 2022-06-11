@@ -30,7 +30,15 @@ bool	allocate_board()
 	if (board.tab)
 	{
 		for (int i = 0; i < MIN_HEIGHT; ++i)
+		{
 			board.tab[i] = ft_calloc(board.width, sizeof(enum case_state));
+			// int x = 0;
+			// while (x < board.width)
+			// {
+			// 	board.tab[i][x] = rand() % 3;
+			// 	x++;
+			// }
+		}
 		return (true);
 	}
 	return (false);
