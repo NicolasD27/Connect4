@@ -11,7 +11,7 @@
 enum case_state {
 	empty = 0,
 	red,
-	black
+	yellow
 };
 
 struct	coordinates {
@@ -19,12 +19,16 @@ struct	coordinates {
 	int		y;
 };
 
-struct	map {
+typedef struct map {
+
 	enum case_state **	tab;
 	
 	int		height;
 	int		width;
-};
+}				t_map;
+
+
+void display_game();
 
 struct	answer {
 	struct coordinates	input;

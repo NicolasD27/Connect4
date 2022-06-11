@@ -1,10 +1,11 @@
 #include "connect4.h"
 
-struct map board;
+t_map board;
 
-void	print_usage()
+int	print_usage()
 {
 	ft_printf("./connect4 WIDTH HEIGHT\n");
+	return 1;
 }
 
 bool	get_map_size(char *arg1, char *arg2)
@@ -77,12 +78,18 @@ void	deallocate_board()
 
 int main(int argc, char *argv[])
 {
-	if ((argc == 3)
-		&& get_map_size(argv[1], argv[2]))
-	{
-		
-	}
-	else
-		print_usage();
+	// int winner;
+	if ((argc != 3) || !get_map_size(argv[1], argv[2]))
+		return print_usage();
+	if (allocate_board())
+		display_game();
+	deallocate_board();
+	// while (1)
+	// {
+	// 	display_game();
+	// 	prompt_move();
+	// 	if ((winner = is_finished()) != 0)
+	// 		return print_winner(winner);
+	// }
 	return (0);
 }
