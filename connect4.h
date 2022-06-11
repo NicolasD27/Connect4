@@ -32,13 +32,14 @@ typedef struct map {
 struct	answer {
 	enum case_state		player;
 	enum case_state		winner;
+	
 	struct coordinates	input;
 	float				eval;
 	float				best_eval;
 	struct answer		*prev;
+
 	struct answer		**next;
 };
-
 
 void display_game();
 void prompt_move();
@@ -46,6 +47,9 @@ int is_finished();
 int print_winner(int winner);
 int winning_piece(int x, int y, enum case_state color);
 int is_finished();
+
+
+int test_direction(int x, int y, int dirx, int diry, int streak_length, int color);
 
 int		get_width();
 int		get_height();

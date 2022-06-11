@@ -27,11 +27,10 @@ int test_direction(int x, int y, int dirx, int diry, int streak_length, enum cas
         return 1;
     else
     {
-        if (x + dirx >= 0 && x + dirx < board.width && y + diry >= 0 && y + diry < board.height && board.tab[y + diry][x + dirx] == color)
+        if (x + dirx >= 0 && x + dirx < board.width && y + diry >= 0 && y + diry < board.height && (int)board.tab[y + diry][x + dirx] == color)
             return test_direction(x + dirx, y + diry, dirx , diry, streak_length - 1, color);
-        else
-            return 0;
     }
+	return 0;
 }
 
 
