@@ -1,3 +1,5 @@
+#ifndef CONNECT4_H
+# define  CONNECT4_H
 
 #include "libft.h"
 
@@ -12,18 +14,21 @@ enum case_state {
 	black
 };
 
-
 struct	coordinates {
 	int		x;
 	int		y;
 };
 
-struct map {
-
+struct	map {
 	enum case_state **	tab;
 	
 	int		height;
 	int		width;
 };
 
-struct map	board;
+struct	answer {
+	struct coordinates	input;
+	struct answer		**next;
+};
+
+#endif

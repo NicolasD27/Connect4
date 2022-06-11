@@ -1,13 +1,11 @@
 #include "connect4.h"
 
-extern struct map board;
-
+struct map board;
 
 void	print_usage()
 {
 	ft_printf("./connect4 WIDTH HEIGHT\n");
 }
-
 
 bool	get_map_size(char *arg1, char *arg2)
 {
@@ -21,7 +19,16 @@ bool	get_map_size(char *arg1, char *arg2)
 	}
 	else
 		return (false);
+}
 
+int		get_width()
+{
+	return (board.width);
+}
+
+int get_height()
+{
+	return (board.height);
 }
 
 bool	allocate_board()
@@ -32,10 +39,33 @@ bool	allocate_board()
 		for (int i = 0; i < MIN_HEIGHT; ++i)
 		{
 			board.tab[i] = ft_calloc(board.width, sizeof(enum case_state));
+			if (!board.tab[i])
+				return (false);
 		}
 		return (true);
 	}
 	return (false);
+}
+
+struct answer *	allocate_answer_node(struct coordinates * coord)
+{
+	struct answer * new = ft_calloc(1, sizeof(struct answer));
+	if (new)
+	{
+		new->input = *coord;
+		new->next = ft_calloc(get_width(), sizeof(void *));
+		if (!new->next)
+		{
+			free(new);
+			new = NULL;
+		}
+	}
+	return (new);
+}
+
+void	deallocate_answer_node(struct coordinates * node)
+{
+	free(node->next);
 }
 
 void	deallocate_board()
@@ -45,13 +75,12 @@ void	deallocate_board()
 	free(board.tab);
 }
 
-
 int main(int argc, char *argv[])
 {
 	if ((argc == 3)
 		&& get_map_size(argv[1], argv[2]))
 	{
-		ft_printf("coucou\n");
+		
 	}
 	else
 		print_usage();
