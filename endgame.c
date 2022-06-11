@@ -21,7 +21,7 @@ int is_finished()
     return 0;
 }
 
-int test_direction(int x, int y, int dirx, int diry, int streak_length, enum case_state color)
+int test_direction(int x, int y, int dirx, int diry, int streak_length, int color)
 {
     if (streak_length == 1)
         return 1;

@@ -76,7 +76,7 @@ void	deallocate_answer_node(struct answer * node)
 			deallocate_answer_node(node->next[i]);
 		}
 	}
-	free(node->next[i]);
+	//free(node->next[i]);
 //	free(node->next);
 	free(node);
 }
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 	{
 		prompt_move();
 		display_game();
-		compute_whole_game(node, 1, red);
+		compute_whole_game(node, 3, red);
 		if ((winner = is_finished()) != 0)
 		{
 			deallocate_board();
