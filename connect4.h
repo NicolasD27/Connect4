@@ -1,9 +1,10 @@
 #ifndef CONNECT4_H
-#define CONNECT4_H
+# define  CONNECT4_H
 
 #include "libft.h"
 
 #include <stdbool.h>
+#include <time.h>
 
 #define MIN_WIDTH 7
 #define MIN_HEIGHT 6
@@ -14,7 +15,6 @@ enum case_state {
 	red,
 	yellow
 };
-
 
 struct	coordinates {
 	int		x;
@@ -29,6 +29,13 @@ typedef struct map {
 	int		width;
 }				t_map;
 
+struct	answer {
+	enum case_state		player;
+	enum case_state		winner;
+	struct coordinates	input;
+	struct answer		**next;
+};
+
 
 void display_game();
 void prompt_move();
@@ -37,7 +44,17 @@ int print_winner(int winner);
 int winning_piece(int x, int y, int color);
 int is_finished();
 
+int		get_width();
+int		get_height();
+
+void	compute_whole_game(struct answer * node, int depth, enum case_state current_player);
+void	fill_turn_node(struct answer * node, enum case_state current_player);
+int		get_first_empty_tile_height_in_column(int column);
+
+struct answer *	allocate_answer_node(struct coordinates * coord);
+
+enum case_state switch_player(enum case_state current);
+enum case_state	choose_first_player();
+
+
 #endif
-
-
-

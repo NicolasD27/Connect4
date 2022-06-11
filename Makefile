@@ -1,10 +1,11 @@
 
-CFLAGS = -Wall -Wextra -g3 -pedantic -fsanitize=address -I ./libft
+CFLAGS = -Wall -Wextra -Werror -g3 -pedantic  -I ./libft #-fsanitize=address
 
 LIBFT = libft/libft.a
 
 NAME = Connect4
-FILES = connect4 display prompt endgame
+FILES = connect4 display prompt endgame algorithm
+
 SRCS = $(addsuffix .c, $(FILES))
 OBJS = $(addsuffix .o, $(FILES))
 
