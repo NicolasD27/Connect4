@@ -6,7 +6,6 @@ int is_finished()
 {
     int x;
     int y = 0;
-    int winner;
 
     while (y < board.height)
     {
@@ -22,7 +21,7 @@ int is_finished()
     return 0;
 }
 
-int test_direction(int x, int y, int dirx, int diry, int streak_length, int color)
+int test_direction(int x, int y, int dirx, int diry, int streak_length, enum case_state color)
 {
     if (streak_length == 1)
         return 1;
@@ -36,7 +35,7 @@ int test_direction(int x, int y, int dirx, int diry, int streak_length, int colo
 }
 
 
-int winning_piece(int x, int y, int color)
+int winning_piece(int x, int y, enum case_state color)
 {
     int dirx = -1;
     int diry = -1;
