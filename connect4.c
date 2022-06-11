@@ -1,6 +1,7 @@
 #include "connect4.h"
 
 t_map board;
+t_transpos_table *known_board;
 
 int	print_usage()
 {
@@ -55,7 +56,7 @@ struct answer *	allocate_answer_node(struct coordinates * coord, struct answer *
 	{
 		new->input.x = coord->x;
 		new->input.y = coord->y;
-		new->eval = 0;
+		new->eval = -1;
 		new->prev = prev;
 		new->next = ft_calloc(get_width(), sizeof(void *));
 		if (!new->next)
@@ -106,6 +107,16 @@ enum case_state switch_player(enum case_state current)
 		return red;
 }
 
+void add_move(int move)
+{
+	int y;
+	y = board.height - 1;
+	while (y >= 0 && board.tab[y][move] != empty)
+		y--;
+	if (y >= 0)
+		board.tab[y][move] = red;
+}
+
 int main(int argc, char *argv[])
 {
 	srand(time(NULL));
@@ -116,19 +127,26 @@ int main(int argc, char *argv[])
 	struct coordinates tmp;
 	tmp.x = 0;
 	tmp.y = 0;
+	int ai_move = 0;
 
 	struct answer * node = allocate_answer_node(&tmp, NULL);
 	if (allocate_board())
 		display_game();
-
+	// known_board = (t_transpos_table)malloc(sizeof(t_transpos_table));
+	// if (!known_board)
+	// 	return 1;
 	compute_whole_game(node, 5, choose_first_player());
-	int ai_move = best_move(node);
+	
 	ft_printf("ai move : %d\n", ai_move);
 	while (1)
 	{
 		prompt_move();
 		display_game();
 		compute_whole_game(node, 3, red);
+		ai_move = best_move(node);
+		ft_printf("best move : %d\n", ai_move);
+		add_move(ai_move);
+		display_game();
 		if ((winner = is_finished()) != 0)
 		{
 			deallocate_board();
