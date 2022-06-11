@@ -30,6 +30,9 @@ typedef struct map {
 
 void display_game();
 
+int		get_width();
+int get_height();
+
 struct	answer {
 	struct coordinates	input;
 	struct answer		**next;

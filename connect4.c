@@ -34,12 +34,12 @@ int get_height()
 
 bool	allocate_board()
 {
-	board.tab = ft_calloc(board.height, sizeof(void *));
+	board.tab = ft_calloc(get_height(), sizeof(void *));
 	if (board.tab)
 	{
-		for (int i = 0; i < MIN_HEIGHT; ++i)
+		for (int i = 0; i < get_height(); ++i)
 		{
-			board.tab[i] = ft_calloc(board.width, sizeof(enum case_state));
+			board.tab[i] = ft_calloc(get_width(), sizeof(enum case_state));
 			if (!board.tab[i])
 				return (false);
 		}
@@ -64,14 +64,14 @@ struct answer *	allocate_answer_node(struct coordinates * coord)
 	return (new);
 }
 
-void	deallocate_answer_node(struct coordinates * node)
+void	deallocate_answer_node(struct answer * node)
 {
 	free(node->next);
 }
 
 void	deallocate_board()
 {
-	for (int i = 0; i < MIN_HEIGHT; ++i)
+	for (int i = 0; i < get_height(); ++i)
 		free(board.tab[i]);
 	free(board.tab);
 }
