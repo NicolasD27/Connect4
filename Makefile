@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -g3 -pedantic -fsanitize=address -I ./libft
 LIBFT = libft/libft.a
 
 NAME = Connect4
-FILES = connect4
+FILES = connect4 display
 SRCS = $(addsuffix .c, $(FILES))
 OBJS = $(addsuffix .o, $(FILES))
 

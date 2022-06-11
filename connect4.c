@@ -1,11 +1,11 @@
 #include "connect4.h"
 
-extern struct map board;
+t_map board;
 
-
-void	print_usage()
+int	print_usage()
 {
 	ft_printf("./connect4 WIDTH HEIGHT\n");
+	return 1;
 }
 
 
@@ -32,6 +32,12 @@ bool	allocate_board()
 		for (int i = 0; i < MIN_HEIGHT; ++i)
 		{
 			board.tab[i] = ft_calloc(board.width, sizeof(enum case_state));
+			// int x = 0;
+			// while (x < board.width)
+			// {
+			// 	board.tab[i][x] = rand() % 3;
+			// 	x++;
+			// }
 		}
 		return (true);
 	}
@@ -48,12 +54,17 @@ void	deallocate_board()
 
 int main(int argc, char *argv[])
 {
-	if ((argc == 3)
-		&& get_map_size(argv[1], argv[2]))
-	{
-		ft_printf("coucou\n");
-	}
-	else
-		print_usage();
+	// int winner;
+	if ((argc != 3) || !get_map_size(argv[1], argv[2]))
+		return print_usage();
+	allocate_board();
+	display_game();
+	// while (1)
+	// {
+	// 	display_game();
+	// 	prompt_move();
+	// 	if ((winner = is_finished()) != 0)
+	// 		return print_winner(winner);
+	// }
 	return (0);
 }
