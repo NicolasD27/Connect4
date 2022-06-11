@@ -50,3 +50,58 @@ void compute_whole_game(struct answer * node, int depth, enum case_state current
 	}
 }
 
+int		check_winning_piece(int x, int y, int color, int streak_length)
+{
+    int dirx = -1;
+    int diry = -1;
+
+    while (dirx <= 1)
+    {
+        diry = -1;
+        while (diry <= 1)
+        {
+            if (!(dirx == 0 && diry == 0) && test_direction(x, y, dirx , diry, streak_length, color))
+                return 1;
+            diry++;
+        }
+        dirx++;
+    }
+    return 0;
+}
+
+int		evaluate_position(int x, int y, int color)
+{
+	int result = 0;
+	
+	if (check_winning_piece(x, y, color, 4))
+		result = 200;
+	else if (check_winning_piece(x, y, color, 3))
+		result = 100;
+	else if (check_winning_piece(x, y, color, 2))
+		result = 50;
+	else
+		result = 10;
+	return (result);
+}
+
+int	evaluate_answer_node(struct answer * node)
+{
+	int best_option = -1;
+	int score = 0;
+	int	node_eval = 0;
+	for (int i = 0; i < get_width(); ++i)
+	{
+		node_eval = evaluate_position(node->input.x, node->input.y, node->player);
+		if (node_eval > score)
+		{
+			score = node_eval;
+			best_option = i;
+		}
+	}
+	return (best_option);
+}
+
+void	update_answer_tree()
+{
+	
+}

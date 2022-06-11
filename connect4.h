@@ -8,6 +8,7 @@
 
 #define MIN_WIDTH 7
 #define MIN_HEIGHT 6
+#define WINNING_STREAK_LENGTH 4
 
 enum case_state {
 	empty = 0,
@@ -31,11 +32,20 @@ typedef struct map {
 struct	answer {
 	enum case_state		player;
 	enum case_state		winner;
+	
 	struct coordinates	input;
+
 	struct answer		**next;
 };
 
-void	display_game();
+void display_game();
+void prompt_move();
+int is_finished();
+int print_winner(int winner);
+int winning_piece(int x, int y, int color);
+int is_finished();
+
+int test_direction(int x, int y, int dirx, int diry, int streak_length, int color);
 
 int		get_width();
 int		get_height();

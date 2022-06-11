@@ -67,7 +67,16 @@ struct answer *	allocate_answer_node(struct coordinates * coord)
 
 void	deallocate_answer_node(struct answer * node)
 {
-	free(node->next);
+	for (int i = 0; i < get_width(); ++i)
+	{
+		if (node->next[i])
+		{
+			deallocate_answer_node(node->next[i]);
+		}
+	}
+	free(node->next[i]);
+//	free(node->next);
+	free(node);
 }
 
 void	deallocate_board()
@@ -79,8 +88,9 @@ void	deallocate_board()
 
 enum case_state	choose_first_player()
 {
-	int res = rand() % 2;
-	if (res)
+	int res = rand();
+	printf("%d\n %d\n", res, rand());
+	if (res == 1)
 		return red;
 	else
 		return yellow;
@@ -96,25 +106,33 @@ enum case_state switch_player(enum case_state current)
 
 int main(int argc, char *argv[])
 {
-	// int winner;
+	srand(time(NULL));
+	int winner;
 	if ((argc != 3) || !get_map_size(argv[1], argv[2]))
 		return print_usage();
 	struct coordinates tmp;
 	tmp.x = 0;
 	tmp.y = 0;
 	struct answer * node = allocate_answer_node(&tmp);
-	if (allocate_board())
-		display_game();
 
-	compute_whole_game(node, 5, choose_first_player());
-	//display_game();
-	deallocate_board();
-	// while (1)
-	// {
-	// 	display_game();
-	// 	prompt_move();
-	// 	if ((winner = is_finished()) != 0)
-	// 		return print_winner(winner);
-	// }
+	allocate_board();
+	display_game();
+	
+	if (node->player == red)
+		puts("red starts");
+
+	while (1)
+	{
+		prompt_move();
+		display_game();
+		compute_whole_game(node, 1, red);
+		if ((winner = is_finished()) != 0)
+		{
+			deallocate_board();
+			deallocate_answer_node(node);
+			return print_winner(winner);
+		}
+	}
+
 	return (0);
 }
