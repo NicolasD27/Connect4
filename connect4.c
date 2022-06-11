@@ -110,6 +110,7 @@ int main(int argc, char *argv[])
 	int winner;
 	if ((argc != 3) || !get_map_size(argv[1], argv[2]))
 		return print_usage();
+
 	struct coordinates tmp;
 	tmp.x = 0;
 	tmp.y = 0;
@@ -118,9 +119,6 @@ int main(int argc, char *argv[])
 	allocate_board();
 	display_game();
 	
-	if (node->player == red)
-		puts("red starts");
-
 	while (1)
 	{
 		prompt_move();
@@ -129,10 +127,9 @@ int main(int argc, char *argv[])
 		if ((winner = is_finished()) != 0)
 		{
 			deallocate_board();
-			deallocate_answer_node(node);
+//			deallocate_answer_node(node);
 			return print_winner(winner);
 		}
 	}
-
 	return (0);
 }

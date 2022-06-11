@@ -45,6 +45,7 @@ int print_winner(int winner);
 int winning_piece(int x, int y, int color);
 int is_finished();
 
+
 int test_direction(int x, int y, int dirx, int diry, int streak_length, int color);
 
 int		get_width();
