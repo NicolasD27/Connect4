@@ -96,10 +96,11 @@ enum case_state switch_player(enum case_state current)
 
 int main(int argc, char *argv[])
 {
-	// int winner;
+	int winner;
 	if ((argc != 3) || !get_map_size(argv[1], argv[2]))
 		return print_usage();
-	struct coordinates tmp;
+
+  struct coordinates tmp;
 	tmp.x = 0;
 	tmp.y = 0;
 	struct answer * node = allocate_answer_node(&tmp);
@@ -107,14 +108,15 @@ int main(int argc, char *argv[])
 		display_game();
 
 	compute_whole_game(node, 5, choose_first_player());
-	//display_game();
-	deallocate_board();
-	// while (1)
-	// {
-	// 	display_game();
-	// 	prompt_move();
-	// 	if ((winner = is_finished()) != 0)
-	// 		return print_winner(winner);
-	// }
+	while (1)
+	{
+		prompt_move();
+		display_game();
+		if ((winner = is_finished()) != 0)
+		{
+			deallocate_board();
+			return print_winner(winner);
+		}
+	}
 	return (0);
 }
