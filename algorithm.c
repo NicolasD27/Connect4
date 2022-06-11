@@ -43,7 +43,7 @@ void sum_evals(struct answer *node, int depth)
 		}
 		return;
 	}
-	int i = 5;
+	int i = 0;
 	while (i < board.width)
 	{
 		
