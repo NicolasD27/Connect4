@@ -32,13 +32,3 @@ int test_direction(int x, int y, int dirx, int diry, int streak_length, enum cas
     }
 	return 0;
 }
-
-
-int print_winner(int winner)
-{
-    if (winner == red)
-        ft_printf("RED WON !");
-    else
-        ft_printf("YELLOW WON !");
-    return 0;
-}
