@@ -49,7 +49,21 @@ bool	allocate_board()
 	return (false);
 }
 
-struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev)
+enum case_state **	dup_board_tab(enum case_state ** ref_tab)
+{
+	enum case_state ** tab = ft_calloc(get_height(), sizeof(void *));
+	for (int y = 0; y < get_height(); ++y)
+	{
+		tab[y] = ft_calloc(get_width(), sizeof(enum case_state));
+		if (!tab[y])
+			return (NULL);
+		for (int x = 0; x < get_width(); ++x)
+			tab[y][x] = ref_tab[y][x];
+	}
+	return (tab);
+}
+
+struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev, enum case_state ** prev_tab, enum case_state player)
 {
 	struct answer * new = ft_calloc(1, sizeof(struct answer));
 	if (new)
@@ -58,6 +72,9 @@ struct answer *	allocate_answer_node(struct coordinates * coord, struct answer *
 		new->input.y = coord->y;
 		new->eval = -1;
 		new->prev = prev;
+		new->tab = dup_board_tab(prev_tab);
+		if (prev)
+			new->tab[coord->y][coord->x] = player;
 		new->next = ft_calloc(get_width(), sizeof(void *));
 		if (!new->next)
 		{
@@ -125,17 +142,17 @@ int main(int argc, char *argv[])
 		return print_usage();
 
 	struct coordinates tmp;
-	tmp.x = 0;
-	tmp.y = 0;
+	tmp.x = -1;
+	tmp.y = -1;
 	int ai_move = 0;
 
-	struct answer * node = allocate_answer_node(&tmp, NULL);
 	if (allocate_board())
 		display_game();
+	struct answer * node = allocate_answer_node(&tmp, NULL, board.tab, yellow);
 	// known_board = (t_transpos_table)malloc(sizeof(t_transpos_table));
 	// if (!known_board)
 	// 	return 1;
-	compute_whole_game(node, 5, choose_first_player());
+	compute_whole_game(node, 4, choose_first_player());
 	
 	ft_printf("ai move : %d\n", ai_move);
 	while (1)
@@ -144,13 +161,13 @@ int main(int argc, char *argv[])
 		display_game();
 		compute_whole_game(node, 3, red);
 		ai_move = best_move(node);
+		deallocate_answer_node(node);
 		ft_printf("best move : %d\n", ai_move);
 		add_move(ai_move);
 		display_game();
 		if ((winner = is_finished()) != 0)
 		{
 			deallocate_board();
-//			deallocate_answer_node(node);
 			return print_winner(winner);
 		}
 	}
