@@ -26,6 +26,17 @@ int get_height()
 	return (board.height);
 }
 
+
+void	deallocate_map(t_map * map)
+{
+	for (int i = 0; i < get_height(); ++i)
+	{
+		free(map->tab[i]);
+	}
+	free(map->tab);
+	free(map);
+}
+
 bool	allocate_board()
 {
 	board.tab = ft_calloc(get_height(), sizeof(void *));
@@ -49,4 +60,17 @@ void	deallocate_board()
 	free(board.tab);
 }
 
+
+bool	board_are_same(t_map * dst, t_map * src)
+{
+	for (int i = 0; i < get_height(); ++i)
+	{
+		for (int j = 0; j < get_width(); ++j)
+		{
+			if (dst->tab[i][j] != src->tab[i][j])
+				return (false);
+		}
+	}
+	return (true);
+}
 

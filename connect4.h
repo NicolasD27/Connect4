@@ -61,6 +61,8 @@ int is_finished();
 bool	get_map_size(char *arg1, char *arg2);
 bool	allocate_board();
 void	deallocate_board();
+void	deallocate_map(t_map * map);
+bool	board_are_same(t_map * dst, t_map * src);
 
 int test_direction(int x, int y, int dirx, int diry, int streak_length, enum case_state color);
 

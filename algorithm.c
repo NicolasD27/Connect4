@@ -1,6 +1,7 @@
 #include "connect4.h"
 
 extern struct map board;
+
 int		evaluate_position(int x, int y, int color);
 void	fill_turn_node(struct answer * node, enum case_state current_player);
 
