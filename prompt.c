@@ -27,6 +27,8 @@ void prompt_move()
             {
                 ft_printf("\n");
                 board.tab[y][x] = yellow;
+				board.last_move.x = x;
+				board.last_move.y = y;
                 return;
             }
         }

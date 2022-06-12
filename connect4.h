@@ -6,8 +6,8 @@
 #include <stdbool.h>
 #include <time.h>
 
-#define MIN_WIDTH 7
-#define MIN_HEIGHT 6
+#define MIN_WIDTH 2
+#define MIN_HEIGHT 2
 #define WINNING_STREAK_LENGTH 4
 
 enum case_state {
@@ -27,6 +27,8 @@ typedef struct map {
 	
 	int		height;
 	int		width;
+
+	struct coordinates		last_move;
 }				t_map;
 
 struct	answer {
@@ -55,16 +57,33 @@ int print_winner(int winner);
 int winning_piece(int x, int y, enum case_state color);
 int is_finished();
 
+//	board
+bool	get_map_size(char *arg1, char *arg2);
+bool	allocate_board();
+void	deallocate_board();
+void	deallocate_map(t_map * map);
+bool	board_are_same(t_map * dst, t_map * src);
 
 int test_direction(int x, int y, int dirx, int diry, int streak_length, enum case_state color);
+
 
 int		get_width();
 int		get_height();
 
-bool is_node_leaf(struct answer *node);
-void	compute_whole_game(struct answer * node, int depth, enum case_state current_player);
+//int test_direction(int x, int y, int dirx, int diry, int streak_length, int color);
+
+void	compute_game_turns(struct answer * node, int depth, enum case_state current_player);
+void	append_possible_paths(struct answer * node);
 void	fill_turn_node(struct answer * node, enum case_state current_player);
 int		get_first_empty_tile_height_in_column(int column);
+
+
+bool is_node_leaf(struct answer *node);
+
+enum case_state switch_player(enum case_state current);
+
+//	tree
+void	deallocate_answer_node(struct answer * node);
 
 int evaluate_board(enum case_state ** tab);
 int		evaluate_position(int x, int y, enum case_state color);
@@ -75,5 +94,10 @@ struct answer *	allocate_answer_node(struct coordinates * coord, struct answer *
 enum case_state switch_player(enum case_state current);
 enum case_state	choose_first_player();
 
+struct answer * update_tree_with_play(struct answer * node);
+
+
+//debug
+void	print_turn(struct answer *node);
 
 #endif

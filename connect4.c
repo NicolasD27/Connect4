@@ -3,107 +3,13 @@
 t_map board;
 t_transpos_table *known_board;
 
+struct answer * current_move;
+
+
 int	print_usage()
 {
 	ft_printf("./connect4 WIDTH HEIGHT\n");
 	return 1;
-}
-
-bool	get_map_size(char *arg1, char *arg2)
-{
-	int width = ft_atoi(arg1);
-	int height = ft_atoi(arg2);
-	if (width >= MIN_WIDTH && height >= MIN_HEIGHT)
-	{
-		board.width = width;
-		board.height = height;
-		return (true);
-	}
-	else
-		return (false);
-}
-
-int		get_width()
-{
-	return (board.width);
-}
-
-int get_height()
-{
-	return (board.height);
-}
-
-bool	allocate_board()
-{
-	board.tab = ft_calloc(get_height(), sizeof(void *));
-	if (board.tab)
-	{
-		for (int i = 0; i < get_height(); ++i)
-		{
-			board.tab[i] = ft_calloc(get_width(), sizeof(enum case_state));
-			if (!board.tab[i])
-				return (false);
-		}
-		return (true);
-	}
-	return (false);
-}
-
-enum case_state **	dup_board_tab(enum case_state ** ref_tab)
-{
-	enum case_state ** tab = ft_calloc(get_height(), sizeof(void *));
-	for (int y = 0; y < get_height(); ++y)
-	{
-		tab[y] = ft_calloc(get_width(), sizeof(enum case_state));
-		if (!tab[y])
-			return (NULL);
-		for (int x = 0; x < get_width(); ++x)
-			tab[y][x] = ref_tab[y][x];
-	}
-	return (tab);
-}
-
-struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev, enum case_state ** prev_tab, enum case_state player)
-{
-	struct answer * new = ft_calloc(1, sizeof(struct answer));
-	if (new)
-	{
-		new->input.x = coord->x;
-		new->input.y = coord->y;
-		new->eval = -1;
-		new->prev = prev;
-		new->tab = dup_board_tab(prev_tab);
-		if (prev)
-			new->tab[coord->y][coord->x] = player;
-		new->next = ft_calloc(get_width(), sizeof(void *));
-		if (!new->next)
-		{
-			free(new);
-			new = NULL;
-		}
-	}
-	return (new);
-}
-
-void	deallocate_answer_node(struct answer * node)
-{
-	for (int i = 0; i < get_width(); ++i)
-	{
-		if (node->next[i])
-		{
-			deallocate_answer_node(node->next[i]);
-		}
-	}
-	//free(node->next[i]);
-//	free(node->next);
-	free(node);
-}
-
-void	deallocate_board()
-{
-	for (int i = 0; i < get_height(); ++i)
-		free(board.tab[i]);
-	free(board.tab);
 }
 
 enum case_state	choose_first_player()
@@ -124,14 +30,30 @@ enum case_state switch_player(enum case_state current)
 		return red;
 }
 
+void	print_turn(struct answer *node)
+{
+	if (node->player == red)
+		puts("red plays");
+	else if (node->player == yellow)
+		puts("yellow plays");
+	else
+		puts("no one plays ?!");
+}
+
 void add_move(int move)
 {
 	int y;
 	y = board.height - 1;
 	while (y >= 0 && board.tab[y][move] != empty)
+	{
 		y--;
+	}
 	if (y >= 0)
+	{
 		board.tab[y][move] = red;
+		board.last_move.x = move;
+		board.last_move.y = y;
+	}
 }
 
 int main(int argc, char *argv[])
@@ -145,31 +67,44 @@ int main(int argc, char *argv[])
 	tmp.x = -1;
 	tmp.y = -1;
 	int ai_move = 0;
-
+  
+// known_board = (t_transpos_table)malloc(sizeof(t_transpos_table));
+ // if (!known_board)
+	// 	return 1; 
 	if (allocate_board())
 		display_game();
 	struct answer * node = allocate_answer_node(&tmp, NULL, board.tab, yellow);
-	// known_board = (t_transpos_table)malloc(sizeof(t_transpos_table));
-	// if (!known_board)
-	// 	return 1;
-	compute_whole_game(node, 4, choose_first_player());
-	
-	ft_printf("ai move : %d\n", ai_move);
+	compute_game_turns(node, 3, yellow);
+
 	while (1)
 	{
 		prompt_move();
+
 		display_game();
-		compute_whole_game(node, 3, red);
+			
 		ai_move = best_move(node);
 		deallocate_answer_node(node);
 		ft_printf("best move : %d\n", ai_move);
+
 		add_move(ai_move);
 		display_game();
+		
+
+		deallocate_answer_node(node);
+		node = allocate_answer_node(&tmp, NULL);
+		compute_game_turns(node, 5, yellow);
+
+		
+
+
+
+
 		if ((winner = is_finished()) != 0)
 		{
 			deallocate_board();
 			return print_winner(winner);
 		}
 	}
+
 	return (0);
 }
