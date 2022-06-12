@@ -2,6 +2,7 @@
 
 t_map board;
 t_transpos_table *known_board;
+struct answer *winner_node;
 
 struct answer * current_move;
 
@@ -85,8 +86,9 @@ int main(int argc, char *argv[])
 			return print_winner(winner);
 		}
 		node = allocate_answer_node(&tmp, NULL, board.tab, yellow);
-		compute_game_turns(node, 5, yellow);	
+		compute_game_turns(node, 6, yellow);	
 		ai_move = best_move(node);
+		winner_node = NULL;
 		deallocate_all_nodes(node);
 		add_move(ai_move);
 		display_game();

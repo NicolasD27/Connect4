@@ -36,6 +36,7 @@ struct	answer {
 	enum case_state		winner;
 	struct coordinates	input;
 	enum case_state **	tab;
+	int 				depth;
 	float				eval;
 	float				best_eval;
 	struct answer		*prev;
@@ -86,8 +87,8 @@ enum case_state switch_player(enum case_state current);
 //	tree
 void	deallocate_all_nodes(struct answer * node);
 
-int evaluate_board(enum case_state ** tab);
-int		evaluate_position(int x, int y, enum case_state color);
+int evaluate_board(enum case_state ** tab, struct answer *node);
+int		evaluate_position(int x, int y, enum case_state color, struct answer *node);
 int best_move(struct answer *node);
 
 struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev, enum case_state ** prev_tab, enum case_state player);
