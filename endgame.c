@@ -12,7 +12,7 @@ int is_finished()
         x = 0;
         while(x < board.width)
         {                
-            if (board.tab[y][x] != empty && winning_piece(x, y, board.tab[y][x]))
+            if (board.tab[y][x] != empty && check_winning_piece(x, y, board.tab[y][x], WINNING_STREAK_LENGTH))
                 return board.tab[y][x];
             x++;
         }
@@ -33,25 +33,6 @@ int test_direction(int x, int y, int dirx, int diry, int streak_length, enum cas
 	return 0;
 }
 
-
-int winning_piece(int x, int y, enum case_state color)
-{
-    int dirx = -1;
-    int diry = -1;
-
-    while (dirx <= 1)
-    {
-        diry = -1;
-        while (diry <= 1)
-        {
-            if (!(dirx == 0 && diry == 0) && test_direction(x, y, dirx , diry, WINNING_STREAK_LENGTH, color))
-                return 1;
-            diry++;
-        }
-        dirx++;
-    }
-    return 0;
-}
 
 int print_winner(int winner)
 {

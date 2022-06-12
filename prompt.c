@@ -14,7 +14,7 @@ void prompt_move()
         ft_printf("\nWhat's your next move ? %d - %d\n", 1, board.width);
         read(0, &input, 10);
         x = ft_atoi(input) - 1;
-        if (x < 0 || x > board.width)
+        if (x < 0 || x > board.width - 1)
             ft_printf("This column doesn't exist ...\n");
         else
         {

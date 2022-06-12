@@ -54,13 +54,14 @@ void display_game();
 void prompt_move();
 int is_finished();
 int print_winner(int winner);
-int winning_piece(int x, int y, enum case_state color);
+int		check_winning_piece(int x, int y, enum case_state color, int streak_length);
 int is_finished();
 
 //	board
 bool	get_map_size(char *arg1, char *arg2);
 bool	allocate_board();
 void	deallocate_board();
+enum case_state **	dup_board_tab(enum case_state ** ref_tab);
 void	deallocate_map(t_map * map);
 bool	board_are_same(t_map * dst, t_map * src);
 
@@ -83,7 +84,7 @@ bool is_node_leaf(struct answer *node);
 enum case_state switch_player(enum case_state current);
 
 //	tree
-void	deallocate_answer_node(struct answer * node);
+void	deallocate_all_nodes(struct answer * node);
 
 int evaluate_board(enum case_state ** tab);
 int		evaluate_position(int x, int y, enum case_state color);

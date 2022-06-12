@@ -2,15 +2,19 @@
 
 extern t_map board;
 
-struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev)
+struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev, enum case_state ** prev_tab, enum case_state player)
 {
 	struct answer * new = ft_calloc(1, sizeof(struct answer));
 	if (new)
 	{
 		new->input.x = coord->x;
 		new->input.y = coord->y;
-		new->eval = 0;
+		new->eval = -1;
 		new->prev = prev;
+		new->tab = dup_board_tab(prev_tab);
+		if (prev)
+			new->tab[coord->y][coord->x] = player;
+		new->eval = evaluate_board(new->tab);
 		new->next = ft_calloc(get_width(), sizeof(void *));
 		if (!new->next)
 		{
@@ -21,23 +25,22 @@ struct answer *	allocate_answer_node(struct coordinates * coord, struct answer *
 	return (new);
 }
 
-void	deallocate_answer_node(struct answer * node)
+void	deallocate_all_nodes(struct answer * node)
 {
-	if (is_node_leaf(node))
-	{
-		free(node->next);
-		node->next = NULL;
-		free(node);
-		node = NULL;
-		return ;
-	}
+	if (!node)
+		return;
 	for (int i = 0; i < get_width(); ++i)
 	{
 		if (node->next[i])
-			deallocate_answer_node(node->next[i]);
+			deallocate_all_nodes(node->next[i]);
 	}
+	for (int y = 0; y < get_height(); ++y)
+		free(node->tab[y]);
+	free(node->tab);
 	free(node->next);
+	node->next = NULL;
 	free(node);
+	node = NULL;
 }
 
 struct answer * update_tree_with_play(struct answer * node)
