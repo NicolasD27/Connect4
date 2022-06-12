@@ -3,6 +3,11 @@
 t_map board;
 t_transpos_table *known_board;
 
+enum case_state player_color;
+enum case_state ia_color;
+enum case_state current_player;
+
+
 struct answer * current_move;
 
 
@@ -12,14 +17,21 @@ int	print_usage()
 	return 1;
 }
 
-enum case_state	choose_first_player()
+void	choose_first_player()
 {
-	int res = rand();
-	printf("%d\n %d\n", res, rand());
-	if (res == 1)
-		return red;
+	if (rand() % 2)
+	{
+		ft_printf("IA starts !\n");
+		player_color = red;
+		ia_color = yellow;
+	}
 	else
-		return yellow;
+	{
+		ft_printf("You start !\n");
+		player_color = yellow;
+		ia_color = red;
+	}
+	current_player = yellow;
 }
 
 enum case_state switch_player(enum case_state current)
@@ -28,16 +40,6 @@ enum case_state switch_player(enum case_state current)
 		return yellow;
 	else
 		return red;
-}
-
-void	print_turn(struct answer *node)
-{
-	if (node->player == red)
-		puts("red plays");
-	else if (node->player == yellow)
-		puts("yellow plays");
-	else
-		puts("no one plays ?!");
 }
 
 void add_move(int move)
@@ -56,46 +58,48 @@ void add_move(int move)
 	}
 }
 
+int print_winner(int winner)
+{
+    if (winner == (int)player_color)
+        ft_printf("YOU WON !");
+    else
+        ft_printf("IA WON !");
+    return 0;
+}
+
+
 int main(int argc, char *argv[])
 {
 	struct answer * node;
 	int winner;
 	int ai_move = 0;
 	struct coordinates tmp;
+	tmp.x = -1;
+	tmp.y = -1;
 
 	srand(time(NULL));
 	if ((argc != 3) || !get_map_size(argv[1], argv[2]))
 		return print_usage();
 
-	tmp.x = -1;
-	tmp.y = -1;
-  
-// known_board = (t_transpos_table)malloc(sizeof(t_transpos_table));
- // if (!known_board)
-	// 	return 1; 
-	if (allocate_board())
-		display_game();
+	choose_first_player();
+	allocate_board();
 	while (1)
 	{
-		prompt_move();
+		if (current_player == player_color)
+			prompt_move();
+		else
+		{
+			node = allocate_answer_node(&tmp, NULL, board.tab, ia_color);
+			compute_game_turns(node, 5, ia_color);	
+			ai_move = best_move(node);
+			deallocate_all_nodes(node);
+			add_move(ai_move);
+		}
 		display_game();
 		if ((winner = is_finished()) != 0)
-		{
-			deallocate_board();
-			return print_winner(winner);
-		}
-		node = allocate_answer_node(&tmp, NULL, board.tab, yellow);
-		compute_game_turns(node, 5, yellow);	
-		ai_move = best_move(node);
-		deallocate_all_nodes(node);
-		add_move(ai_move);
-		display_game();
-		if ((winner = is_finished()) != 0)
-		{
-			deallocate_board();
-			return print_winner(winner);
-		}
+			break ;
+		current_player = switch_player(current_player);
 	}
-
-	return (0);
+	deallocate_board();
+	return (print_winner(current_player));
 }

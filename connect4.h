@@ -92,8 +92,8 @@ int best_move(struct answer *node);
 
 struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev, enum case_state ** prev_tab, enum case_state player);
 
-enum case_state switch_player(enum case_state current);
-enum case_state	choose_first_player();
+
+void	choose_first_player();
 
 struct answer * update_tree_with_play(struct answer * node);
 
