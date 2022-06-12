@@ -37,6 +37,20 @@ void	deallocate_map(t_map * map)
 	free(map);
 }
 
+enum case_state **	dup_board_tab(enum case_state ** ref_tab)
+{
+	enum case_state ** tab = ft_calloc(get_height(), sizeof(void *));
+	for (int y = 0; y < get_height(); ++y)
+	{
+		tab[y] = ft_calloc(get_width(), sizeof(enum case_state));
+		if (!tab[y])
+			return (NULL);
+		for (int x = 0; x < get_width(); ++x)
+			tab[y][x] = ref_tab[y][x];
+	}
+	return (tab);
+}
+
 bool	allocate_board()
 {
 	board.tab = ft_calloc(get_height(), sizeof(void *));
