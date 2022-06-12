@@ -41,6 +41,13 @@ struct	answer {
 	struct answer		**next;
 };
 
+typedef struct	s_transpos_table { 
+	float eval;
+	t_map board;
+	struct	s_transpos_table * next;
+}				t_transpos_table;
+
+
 void display_game();
 void prompt_move();
 int is_finished();
@@ -53,17 +60,25 @@ bool	get_map_size(char *arg1, char *arg2);
 bool	allocate_board();
 void	deallocate_board();
 
+int test_direction(int x, int y, int dirx, int diry, int streak_length, enum case_state color);
+
 
 int		get_width();
 int		get_height();
 
-
-int test_direction(int x, int y, int dirx, int diry, int streak_length, int color);
+//int test_direction(int x, int y, int dirx, int diry, int streak_length, int color);
 
 void	compute_whole_game(struct answer * node, int depth, enum case_state current_player);
 void	fill_turn_node(struct answer * node, enum case_state current_player);
 int		get_first_empty_tile_height_in_column(int column);
-bool all_move_are_done(struct answer *node);
+
+bool is_node_leaf(struct answer *node);
+
+
+
+
+int		evaluate_position(int x, int y, int color);
+
 int best_move(struct answer *node);
 
 

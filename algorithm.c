@@ -39,21 +39,32 @@ void	fill_turn_node(struct answer * node, enum case_state current_player)
 void sum_evals(struct answer *node, int depth)
 {
 	float sum;
-	if (!(node->next))
+	if (is_node_leaf(node))
 	{
+		
 		sum = 0;
 		while (node->prev && node->prev->prev)
 		{
+			if (node->eval < 0)
+			{
+				node->eval = evaluate_position(node->input.x, node->input.y, red);
+			}
 			sum += node->eval * 1 / (float)depth;
+			int i = 0;
+			ft_printf("at depth %d, sum = %f\n", depth - i++, sum);
 			node = node->prev;
 		}
 		if (node->eval + sum > node->best_eval)
+		{
+			ft_printf("x : %d\n ", node->input.x);
 			node->best_eval = node->eval + sum;
+		}
 		return;
 	}
 	int i = 0;
 	while (i < board.width)
 	{
+		
 		if (node->next[i])
 			sum_evals(node->next[i], depth + 1);
 		i++;
@@ -63,12 +74,13 @@ void sum_evals(struct answer *node, int depth)
 int best_move(struct answer *node)
 {
 	int i = 0;
-	int max = 0;
+	int max = -1;
 	int best_move = 0;
 
 	sum_evals(node, 0);
 	while (i < board.width)
 	{
+		ft_printf("best_eval for %d : %f\n", i, node->next[i]->best_eval);
 		if (node->next[i] && node->next[i]->best_eval >= max)
 		{
 			best_move = node->next[i]->input.x;
@@ -89,7 +101,7 @@ int	get_first_empty_tile_height_in_column(int column)
 }
 
 
-bool all_move_are_done(struct answer *node)
+bool is_node_leaf(struct answer *node)
 {
 	for (int i = 0; i < get_width(); i++)
 	{
@@ -98,6 +110,8 @@ bool all_move_are_done(struct answer *node)
 	}
 	return (true);
 }
+
+
 
 void compute_whole_game(struct answer * node, int depth, enum case_state current_player)
 {
@@ -140,29 +154,34 @@ int		evaluate_position(int x, int y, int color)
 		result = 100;
 	else if (check_winning_piece(x, y, color, 2))
 		result = 50;
-	else
-		result = 10;
+	// else
+	// 	result = 10;
 	return (result);
 }
 
-int	evaluate_answer_node(struct answer * node)
-{
-	int best_option = -1;
-	int score = 0;
-	int	node_eval = 0;
-	for (int i = 0; i < get_width(); ++i)
-	{
-		node_eval = evaluate_position(node->input.x, node->input.y, node->player);
-		if (node_eval > score)
-		{
-			score = node_eval;
-			best_option = i;
-		}
-	}
-	return (best_option);
-}
+// int	evaluate_answer_node(struct answer * node)
+// {
+// 	int best_option = -1;
+// 	int score = 0;
+// 	int	node_eval = 0;
+// 	for (int i = 0; i < get_width(); ++i)
+// 	{
+// 		node->next[i]->eval = evaluate_position(node->input.x, node->input.y, node->player);
+// 		// if (node_eval > score)
+// 		// {
+// 		// 	score = node_eval;
+// 		// 	best_option = i;
+// 		// }
+// 	}
+// 	return (best_option);
+// }
 
 void	update_answer_tree()
 {
 	
 }
+// int compare_to_tranpos_table()
+// {
+	
+// }
+

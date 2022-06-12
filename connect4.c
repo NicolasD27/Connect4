@@ -1,6 +1,7 @@
 #include "connect4.h"
 
 t_map board;
+t_transpos_table *known_board;
 
 int	print_usage()
 {
@@ -26,6 +27,7 @@ enum case_state switch_player(enum case_state current)
 		return red;
 }
 
+
 void	print_turn(struct answer *node)
 {
 	if (node->player == red)
@@ -34,6 +36,16 @@ void	print_turn(struct answer *node)
 		puts("yellow plays");
 	else
 		puts("no one plays ?!");
+}
+
+void add_move(int move)
+{
+	int y;
+	y = board.height - 1;
+	while (y >= 0 && board.tab[y][move] != empty)
+		y--;
+	if (y >= 0)
+		board.tab[y][move] = red;
 }
 
 int main(int argc, char *argv[])
@@ -46,6 +58,7 @@ int main(int argc, char *argv[])
 	struct coordinates tmp;
 	tmp.x = 0;
 	tmp.y = 0;
+	int ai_move = 0;
 
 	if (allocate_board())
 		display_game();
@@ -58,6 +71,12 @@ int main(int argc, char *argv[])
 		display_game();
 		struct answer * node = allocate_answer_node(&tmp, NULL);
 		compute_whole_game(node, 3, red);
+
+		ai_move = best_move(node);
+		ft_printf("best move : %d\n", ai_move);
+		add_move(ai_move);
+		display_game();
+
 		print_turn(node);
 		deallocate_answer_node(node);
 

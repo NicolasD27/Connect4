@@ -21,7 +21,7 @@ struct answer *	allocate_answer_node(struct coordinates * coord, struct answer *
 
 void	deallocate_answer_node(struct answer * node)
 {
-	if (all_move_are_done(node))
+	if (is_node_leaf(node))
 	{
 		free(node->next);
 		node->next = NULL;
