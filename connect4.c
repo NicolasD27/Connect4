@@ -2,6 +2,7 @@
 
 t_map board;
 t_transpos_table *known_board;
+struct answer *winner_node;
 
 enum case_state player_color;
 enum case_state ia_color;
