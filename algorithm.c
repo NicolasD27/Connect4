@@ -15,11 +15,11 @@ void	print_next_turn_evals(struct answer * node)
 
 void compute_game_turns(struct answer * node, int depth, enum case_state current_player)
 {
-	if (depth <= 0)
+	if (depth <= 0 || node->winner != empty)
 		return ;
 
-	if (node->prev)
-		board.tab[node->input.y][node->input.x] = current_player;
+	// if (node->prev)
+	// 	board.tab[node->input.y][node->input.x] = current_player;
 
 	fill_turn_node(node, current_player);
 	for (int i = 0; i < get_width(); i++)
@@ -32,8 +32,8 @@ void compute_game_turns(struct answer * node, int depth, enum case_state current
 
 		}
 	}
-	if (node->prev)
-		board.tab[node->input.y][node->input.x] = empty;
+	// if (node->prev)
+	// 	board.tab[node->input.y][node->input.x] = empty;
 
 }
 
@@ -80,10 +80,7 @@ void	fill_turn_node(struct answer * node, enum case_state current_player)
 			board.tab[turn_play.y][turn_play.x] = empty;
 */
 			node->next[i] = allocate_answer_node(&turn_play, node, node->tab, current_player);
-			if (node->next[i])
-			{
-				node->next[i]->eval = evaluate_position(turn_play.x, turn_play.y, current_player);
-			}
+
 				
 		}
 		else
@@ -91,62 +88,7 @@ void	fill_turn_node(struct answer * node, enum case_state current_player)
 	}
 }
 
-void sum_evals(struct answer *node, int depth)
-{
-	float sum;
-	if (!node)
-		return;
-	if (is_node_leaf(node))
-	{
-		sum = 0;
-		while (1)
-		{
-			// if (node->eval < 0)
-			// 	node->eval = evaluate_position(node->input.x, node->input.y, red);
-			sum += node->eval * 1 / (float)depth;
 
-			if (!node->prev->prev) //si on est juste avant la racine on quitte
-				break;
-			node = node->prev;
-		}
-		if (sum > node->best_eval)
-		{
-			node->best_eval = sum;
-		}
-		return;
-	}
-	int i = 0;
-	while (i < board.width)
-	{
-		if (node->next[i])
-		{
-			node->next[i]->eval = evaluate_board(node->next[i]->tab);
-			sum_evals(node->next[i], depth + 1);
-		}
-		i++;
-	}
-}
-
-int best_move(struct answer *node)
-{
-	int i = 0;
-	float max = -1;
-	int best_move = 0;
-
-	sum_evals(node, 0);
-	while (i < board.width)
-	{
-		
-		if (node->next[i] && node->next[i]->best_eval >= max)
-		{
-			best_move = node->next[i]->input.x;
-			max = node->next[i]->best_eval;
-		}
-		i++;
-	}
-	ft_printf("best eval %f for move in %d\n", max, best_move);
-	return best_move;
-}
 
 int	get_first_empty_tile_height_in_column(int column)
 {

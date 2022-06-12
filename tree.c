@@ -12,9 +12,10 @@ struct answer *	allocate_answer_node(struct coordinates * coord, struct answer *
 		new->eval = -1;
 		new->prev = prev;
 		new->tab = dup_board_tab(prev_tab);
+		new->winner = empty;
 		if (prev)
 			new->tab[coord->y][coord->x] = player;
-		new->eval = evaluate_board(new->tab);
+		new->eval = evaluate_board(new->tab, new);
 		new->next = ft_calloc(get_width(), sizeof(void *));
 		if (!new->next)
 		{
