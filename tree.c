@@ -1,5 +1,7 @@
 #include "connect4.h"
 
+extern t_map board;
+
 struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev)
 {
 	struct answer * new = ft_calloc(1, sizeof(struct answer));
@@ -37,3 +39,26 @@ void	deallocate_answer_node(struct answer * node)
 	free(node->next);
 	free(node);
 }
+
+struct answer * update_tree_with_play(struct answer * node)
+{
+	for (int i = 0; i < get_width(); ++i)
+	{
+		if (node->next[i])
+		{
+			int x = board.last_move.x;
+			int y = board.last_move.y;
+
+			if (y == node->next[i]->input.y &&
+				x == node->next[i]->input.x)
+			{
+				puts("found current play");
+				return (node->next[i]);
+			}
+		}
+	}
+	puts("update tree should have found the play");
+	return (NULL);
+}
+
+

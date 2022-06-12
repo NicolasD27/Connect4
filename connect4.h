@@ -6,8 +6,8 @@
 #include <stdbool.h>
 #include <time.h>
 
-#define MIN_WIDTH 7
-#define MIN_HEIGHT 6
+#define MIN_WIDTH 2
+#define MIN_HEIGHT 2
 #define WINNING_STREAK_LENGTH 4
 
 enum case_state {
@@ -27,6 +27,8 @@ typedef struct map {
 	
 	int		height;
 	int		width;
+
+	struct coordinates		last_move;
 }				t_map;
 
 struct	answer {
@@ -68,13 +70,14 @@ int		get_height();
 
 //int test_direction(int x, int y, int dirx, int diry, int streak_length, int color);
 
-void	compute_whole_game(struct answer * node, int depth, enum case_state current_player);
+void	compute_game_turns(struct answer * node, int depth, enum case_state current_player);
+void	append_possible_paths(struct answer * node);
 void	fill_turn_node(struct answer * node, enum case_state current_player);
 int		get_first_empty_tile_height_in_column(int column);
 
 bool is_node_leaf(struct answer *node);
 
-
+enum case_state switch_player(enum case_state current);
 
 
 int		evaluate_position(int x, int y, int color);
@@ -89,6 +92,8 @@ void	deallocate_answer_node(struct answer * node);
 
 enum case_state switch_player(enum case_state current);
 enum case_state	choose_first_player();
+
+struct answer * update_tree_with_play(struct answer * node);
 
 
 //debug

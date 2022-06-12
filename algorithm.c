@@ -2,6 +2,7 @@
 
 extern struct map board;
 int		evaluate_position(int x, int y, int color);
+void	fill_turn_node(struct answer * node, enum case_state current_player);
 
 void	print_next_turn_evals(struct answer * node)
 {
@@ -12,28 +13,83 @@ void	print_next_turn_evals(struct answer * node)
 }
 
 
+
+void compute_game_turns(struct answer * node, int depth, enum case_state current_player)
+{
+	if (depth <= 0)
+		return ;
+
+	if (node->prev)
+		board.tab[node->input.y][node->input.x] = current_player;
+
+	fill_turn_node(node, current_player);
+	for (int i = 0; i < get_width(); i++)
+	{
+
+		if (node->next[i])
+		{
+
+			compute_game_turns(node->next[i], depth - 1, switch_player(current_player));
+
+		}
+	}
+	if (node->prev)
+		board.tab[node->input.y][node->input.x] = empty;
+
+}
+
+
+void	append_possible_paths(struct answer * node)
+{
+	if (is_node_leaf(node))
+		compute_game_turns(node, 3, node->player);
+	else
+	{
+		for (int i = 0; i < get_width(); i++)
+		{
+			if (node->next[i])
+			{
+				append_possible_paths(node->next[i]);
+			}
+		}
+	}
+}
+
+
+
 void	fill_turn_node(struct answer * node, enum case_state current_player)
 {
 	struct coordinates turn_play;
 
 	node->player = current_player;
-	print_turn(node);
+
+//	print_turn(node);
+
 	for (int i = 0; i < get_width(); i++)
 	{
 		turn_play.x = i;
 		turn_play.y = get_first_empty_tile_height_in_column(i);
-		
+/*
+
+		ft_printf("current tried pos %d %d\n", turn_play.x, turn_play.y); 
+*/
 		if (turn_play.y != -1) // column is full
 		{
+/*
+			board.tab[turn_play.y][turn_play.x] = current_player;
+			display_game();
+			board.tab[turn_play.y][turn_play.x] = empty;
+*/
 			node->next[i] = allocate_answer_node(&turn_play, node);
 			if (node->next[i])
+			{
 				node->next[i]->eval = evaluate_position(turn_play.x, turn_play.y, current_player);
+			}
 				
 		}
 		else
 			node->next[i] = NULL;
 	}
-	print_next_turn_evals(node);
 }
 
 void sum_evals(struct answer *node, int depth)
@@ -50,13 +106,13 @@ void sum_evals(struct answer *node, int depth)
 				node->eval = evaluate_position(node->input.x, node->input.y, red);
 			}
 			sum += node->eval * 1 / (float)depth;
-			int i = 0;
-			ft_printf("at depth %d, sum = %f\n", depth - i++, sum);
+//			int i = 0;
+//			ft_printf("at depth %d, sum = %f\n", depth - i++, sum);
 			node = node->prev;
 		}
 		if (node->eval + sum > node->best_eval)
 		{
-			ft_printf("x : %d\n ", node->input.x);
+//			ft_printf("x : %d\n ", node->input.x);
 			node->best_eval = node->eval + sum;
 		}
 		return;
@@ -80,7 +136,7 @@ int best_move(struct answer *node)
 	sum_evals(node, 0);
 	while (i < board.width)
 	{
-		ft_printf("best_eval for %d : %f\n", i, node->next[i]->best_eval);
+//		ft_printf("best_eval for %d : %f\n", i, node->next[i]->best_eval);
 		if (node->next[i] && node->next[i]->best_eval >= max)
 		{
 			best_move = node->next[i]->input.x;
@@ -112,19 +168,6 @@ bool is_node_leaf(struct answer *node)
 }
 
 
-
-void compute_whole_game(struct answer * node, int depth, enum case_state current_player)
-{
-	if (depth <= 0)
-		return ;
-	fill_turn_node(node, current_player);
-	for (int i = 0; i < get_width(); i++)
-	{
-		if (node->next[i])
-			compute_whole_game(node->next[i], depth - 1, switch_player(current_player));
-	}
-}
-
 int		check_winning_piece(int x, int y, int color, int streak_length)
 {
     int dirx = -1;
@@ -154,6 +197,8 @@ int		evaluate_position(int x, int y, int color)
 		result = 100;
 	else if (check_winning_piece(x, y, color, 2))
 		result = 50;
+	if (color == yellow)
+		result *= -1;
 	// else
 	// 	result = 10;
 	return (result);
@@ -175,6 +220,7 @@ int		evaluate_position(int x, int y, int color)
 // 	}
 // 	return (best_option);
 // }
+
 
 void	update_answer_tree()
 {

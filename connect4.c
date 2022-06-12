@@ -3,6 +3,9 @@
 t_map board;
 t_transpos_table *known_board;
 
+struct answer * current_move;
+
+
 int	print_usage()
 {
 	ft_printf("./connect4 WIDTH HEIGHT\n");
@@ -27,7 +30,6 @@ enum case_state switch_player(enum case_state current)
 		return red;
 }
 
-
 void	print_turn(struct answer *node)
 {
 	if (node->player == red)
@@ -43,9 +45,15 @@ void add_move(int move)
 	int y;
 	y = board.height - 1;
 	while (y >= 0 && board.tab[y][move] != empty)
+	{
 		y--;
+	}
 	if (y >= 0)
+	{
 		board.tab[y][move] = red;
+		board.last_move.x = move;
+		board.last_move.y = y;
+	}
 }
 
 int main(int argc, char *argv[])
@@ -65,24 +73,35 @@ int main(int argc, char *argv[])
 
 //	int ai_move = best_move(node);
 //	ft_printf("ai move : %d\n", ai_move);
+	struct answer * node = allocate_answer_node(&tmp, NULL);
+	compute_game_turns(node, 3, yellow);
+
 	while (1)
 	{
 		prompt_move();
-		display_game();
-		struct answer * node = allocate_answer_node(&tmp, NULL);
-		compute_whole_game(node, 3, red);
 
+		display_game();
+			
 		ai_move = best_move(node);
 		ft_printf("best move : %d\n", ai_move);
+
 		add_move(ai_move);
 		display_game();
+		
 
-		print_turn(node);
 		deallocate_answer_node(node);
+		node = allocate_answer_node(&tmp, NULL);
+		compute_game_turns(node, 5, yellow);
+
+		
+
+
+
 
 		if ((winner = is_finished()) != 0)
 		{
 			deallocate_board();
+			deallocate_answer_node(node);
 			return print_winner(winner);
 		}
 	}
