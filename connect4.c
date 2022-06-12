@@ -64,16 +64,16 @@ int main(int argc, char *argv[])
 		return print_usage();
 
 	struct coordinates tmp;
-	tmp.x = 0;
-	tmp.y = 0;
+	tmp.x = -1;
+	tmp.y = -1;
 	int ai_move = 0;
-
+  
+// known_board = (t_transpos_table)malloc(sizeof(t_transpos_table));
+ // if (!known_board)
+	// 	return 1; 
 	if (allocate_board())
 		display_game();
-
-//	int ai_move = best_move(node);
-//	ft_printf("ai move : %d\n", ai_move);
-	struct answer * node = allocate_answer_node(&tmp, NULL);
+	struct answer * node = allocate_answer_node(&tmp, NULL, board.tab, yellow);
 	compute_game_turns(node, 3, yellow);
 
 	while (1)
@@ -83,6 +83,7 @@ int main(int argc, char *argv[])
 		display_game();
 			
 		ai_move = best_move(node);
+		deallocate_answer_node(node);
 		ft_printf("best move : %d\n", ai_move);
 
 		add_move(ai_move);
@@ -101,7 +102,6 @@ int main(int argc, char *argv[])
 		if ((winner = is_finished()) != 0)
 		{
 			deallocate_board();
-			deallocate_answer_node(node);
 			return print_winner(winner);
 		}
 	}

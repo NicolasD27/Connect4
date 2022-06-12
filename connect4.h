@@ -34,8 +34,8 @@ typedef struct map {
 struct	answer {
 	enum case_state		player;
 	enum case_state		winner;
-	
 	struct coordinates	input;
+	enum case_state **	tab;
 	float				eval;
 	float				best_eval;
 	struct answer		*prev;
@@ -77,20 +77,19 @@ void	append_possible_paths(struct answer * node);
 void	fill_turn_node(struct answer * node, enum case_state current_player);
 int		get_first_empty_tile_height_in_column(int column);
 
+
 bool is_node_leaf(struct answer *node);
 
 enum case_state switch_player(enum case_state current);
 
-
-int		evaluate_position(int x, int y, int color);
-
-int best_move(struct answer *node);
-
-
 //	tree
-struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev);
 void	deallocate_answer_node(struct answer * node);
 
+int evaluate_board(enum case_state ** tab);
+int		evaluate_position(int x, int y, enum case_state color);
+int best_move(struct answer *node);
+
+struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev, enum case_state ** prev_tab, enum case_state player);
 
 enum case_state switch_player(enum case_state current);
 enum case_state	choose_first_player();
