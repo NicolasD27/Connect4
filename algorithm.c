@@ -1,21 +1,39 @@
 #include "connect4.h"
 
 extern struct map board;
+int		evaluate_position(int x, int y, int color);
+
+void	print_next_turn_evals(struct answer * node)
+{
+	for (int i = 0; i < get_width(); i++)
+	{
+		ft_printf("tile %d, eval %.2f best_eval %.2f\n", i, node->eval, node->best_eval);
+	}
+}
+
 
 void	fill_turn_node(struct answer * node, enum case_state current_player)
 {
 	struct coordinates turn_play;
 
 	node->player = current_player;
+	print_turn(node);
 	for (int i = 0; i < get_width(); i++)
 	{
 		turn_play.x = i;
 		turn_play.y = get_first_empty_tile_height_in_column(i);
+		
 		if (turn_play.y != -1) // column is full
+		{
 			node->next[i] = allocate_answer_node(&turn_play, node);
+			if (node->next[i])
+				node->next[i]->eval = evaluate_position(turn_play.x, turn_play.y, current_player);
+				
+		}
 		else
 			node->next[i] = NULL;
 	}
+	print_next_turn_evals(node);
 }
 
 void sum_evals(struct answer *node, int depth)

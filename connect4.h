@@ -48,11 +48,17 @@ int print_winner(int winner);
 int winning_piece(int x, int y, enum case_state color);
 int is_finished();
 
+//	board
+bool	get_map_size(char *arg1, char *arg2);
+bool	allocate_board();
+void	deallocate_board();
 
-int test_direction(int x, int y, int dirx, int diry, int streak_length, int color);
 
 int		get_width();
 int		get_height();
+
+
+int test_direction(int x, int y, int dirx, int diry, int streak_length, int color);
 
 void	compute_whole_game(struct answer * node, int depth, enum case_state current_player);
 void	fill_turn_node(struct answer * node, enum case_state current_player);
@@ -60,10 +66,17 @@ int		get_first_empty_tile_height_in_column(int column);
 bool all_move_are_done(struct answer *node);
 int best_move(struct answer *node);
 
-struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * node);
+
+//	tree
+struct answer *	allocate_answer_node(struct coordinates * coord, struct answer * prev);
+void	deallocate_answer_node(struct answer * node);
+
 
 enum case_state switch_player(enum case_state current);
 enum case_state	choose_first_player();
 
+
+//debug
+void	print_turn(struct answer *node);
 
 #endif
