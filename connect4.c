@@ -7,7 +7,7 @@ enum case_state player_color;
 enum case_state ia_color;
 enum case_state current_player;
 
-
+int game_count;
 struct answer * current_move;
 
 
@@ -60,7 +60,9 @@ void add_move(int move)
 
 int print_winner(int winner)
 {
-    if (winner == (int)player_color)
+	if (game_count == get_width() * get_height())
+		ft_printf("It'S A DRAW !\n");
+    else if (winner == (int)player_color)
         ft_printf("YOU WON !");
     else
         ft_printf("IA WON !");
@@ -73,6 +75,7 @@ int main(int argc, char *argv[])
 	struct answer * node;
 	int winner;
 	int ai_move = 0;
+	game_count = 0;
 	struct coordinates tmp;
 	tmp.x = -1;
 	tmp.y = -1;
@@ -83,8 +86,10 @@ int main(int argc, char *argv[])
 
 	choose_first_player();
 	allocate_board();
+	display_game();
 	while (1)
 	{
+		game_count++;
 		if (current_player == player_color)
 			prompt_move();
 		else
@@ -96,7 +101,7 @@ int main(int argc, char *argv[])
 			add_move(ai_move);
 		}
 		display_game();
-		if ((winner = is_finished()) != 0)
+		if ((winner = is_finished()) != 0 || game_count == get_width() * get_height())
 			break ;
 		current_player = switch_player(current_player);
 	}

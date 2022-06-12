@@ -6,8 +6,8 @@
 #include <stdbool.h>
 #include <time.h>
 
-#define MIN_WIDTH 2
-#define MIN_HEIGHT 2
+#define MIN_WIDTH 7
+#define MIN_HEIGHT 6
 #define WINNING_STREAK_LENGTH 4
 
 enum case_state {
