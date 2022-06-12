@@ -12,7 +12,7 @@ void	fill_turn_node(struct answer * node, enum case_state current_player)
 		turn_play.x = i;
 		turn_play.y = get_first_empty_tile_height_in_column(i);
 		if (turn_play.y != -1) // column is full
-			node->next[i] = allocate_answer_node(&turn_play, node);
+			node->next[i] = allocate_answer_node(&turn_play, node, node->tab, current_player);
 		else
 			node->next[i] = NULL;
 	}
@@ -21,23 +21,35 @@ void	fill_turn_node(struct answer * node, enum case_state current_player)
 void sum_evals(struct answer *node, int depth)
 {
 	float sum;
-	if (!(node->next))
+	if (!node)
+		return;
+	if (is_node_leaf(node))
 	{
 		sum = 0;
-		while (node->prev && node->prev->prev)
+		while (1)
 		{
+			if (node->eval < 0)
+				node->eval = evaluate_position(node->input.x, node->input.y, red);
 			sum += node->eval * 1 / (float)depth;
+			if (!node->prev->prev) //si on est juste avant la racine on quitte
+				break;
 			node = node->prev;
 		}
-		if (node->eval + sum > node->best_eval)
-			node->best_eval = node->eval + sum;
+		if (sum > node->best_eval)
+		{
+			ft_printf("x : %d\n ", node->input.x);
+			node->best_eval = sum;
+		}
 		return;
 	}
 	int i = 0;
 	while (i < board.width)
 	{
 		if (node->next[i])
+		{
+			node->next[i]->eval = evaluate_board(node->next[i]->tab);
 			sum_evals(node->next[i], depth + 1);
+		}
 		i++;
 	}
 }
@@ -45,12 +57,13 @@ void sum_evals(struct answer *node, int depth)
 int best_move(struct answer *node)
 {
 	int i = 0;
-	int max = 0;
+	int max = -1;
 	int best_move = 0;
 
 	sum_evals(node, 0);
 	while (i < board.width)
 	{
+		ft_printf("best_eval for %d : %f\n", i, node->next[i]->best_eval);
 		if (node->next[i] && node->next[i]->best_eval >= max)
 		{
 			best_move = node->next[i]->input.x;
@@ -71,7 +84,7 @@ int	get_first_empty_tile_height_in_column(int column)
 }
 
 
-bool all_move_are_done(struct answer *node)
+bool is_node_leaf(struct answer *node)
 {
 	for (int i = 0; i < get_width(); i++)
 	{
@@ -80,6 +93,8 @@ bool all_move_are_done(struct answer *node)
 	}
 	return (true);
 }
+
+
 
 void compute_whole_game(struct answer * node, int depth, enum case_state current_player)
 {
@@ -93,7 +108,7 @@ void compute_whole_game(struct answer * node, int depth, enum case_state current
 	}
 }
 
-int		check_winning_piece(int x, int y, int color, int streak_length)
+int		check_winning_piece(int x, int y, enum case_state color, int streak_length)
 {
     int dirx = -1;
     int diry = -1;
@@ -112,39 +127,64 @@ int		check_winning_piece(int x, int y, int color, int streak_length)
     return 0;
 }
 
-int		evaluate_position(int x, int y, int color)
+int evaluate_board(enum case_state ** tab)
+{
+	int x;
+	int y = 0;
+	int sum = 0;
+	
+	while (y < get_height())
+	{
+		x = 0;
+		while (x < get_width())
+		{
+			sum += evaluate_position(x, y, (int)tab[y][x]);
+			x++;
+		}
+		y++;
+	}
+	return sum;
+}
+
+int		evaluate_position(int x, int y, enum case_state color)
 {
 	int result = 0;
 	
 	if (check_winning_piece(x, y, color, 4))
-		result = 200;
+		result = 20000;
 	else if (check_winning_piece(x, y, color, 3))
 		result = 100;
 	else if (check_winning_piece(x, y, color, 2))
 		result = 50;
-	else
-		result = 10;
+	// else
+	// 	result = 10;
+	result *= (color == yellow) ? -1 : 1;
 	return (result);
 }
 
-int	evaluate_answer_node(struct answer * node)
-{
-	int best_option = -1;
-	int score = 0;
-	int	node_eval = 0;
-	for (int i = 0; i < get_width(); ++i)
-	{
-		node_eval = evaluate_position(node->input.x, node->input.y, node->player);
-		if (node_eval > score)
-		{
-			score = node_eval;
-			best_option = i;
-		}
-	}
-	return (best_option);
-}
+// int	evaluate_answer_node(struct answer * node)
+// {
+// 	int best_option = -1;
+// 	int score = 0;
+// 	int	node_eval = 0;
+// 	for (int i = 0; i < get_width(); ++i)
+// 	{
+// 		node->next[i]->eval = evaluate_position(node->input.x, node->input.y, node->player);
+// 		// if (node_eval > score)
+// 		// {
+// 		// 	score = node_eval;
+// 		// 	best_option = i;
+// 		// }
+// 	}
+// 	return (best_option);
+// }
 
 void	update_answer_tree()
 {
 	
 }
+// int compare_to_tranpos_table()
+// {
+	
+// }
+
